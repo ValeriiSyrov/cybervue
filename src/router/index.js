@@ -31,150 +31,118 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+	{
+		path: '/login',
+		component: () => import('@/views/login/index'),
+		hidden: true
+	},
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
+	{
+		path: '/404',
+		component: () => import('@/views/404'),
+		hidden: true
+	},
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
-  },
+	{
+		path: '/',
+		component: Layout,
+		redirect: '/dashboard',
+		children: [{
+			path: 'dashboard',
+			name: 'Dashboard',
+			component: () => import('@/views/dashboard/index'),
+			meta: { title: 'Home', icon: 'dashboard' }
+		}]
+	},
 
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
+	{
+		path: '/categories',
+		component: Layout,
+		redirect: '/categories',
+		children: [{
+			path: 'categories',
+			name: 'Categories',
+			component: () => import('@/views/categories/index'),
+			meta: { title: 'Categories', icon: 'categories' }
+		}]
+	},
 
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
+	{
+		path: '/articles',
+		component: Layout,
+		redirect: '/articles',
+		children: [{
+			path: 'articles',
+			name: 'Articles',
+			component: () => import('@/views/articles/index'),
+			meta: { title: 'Articles', icon: 'articles' }
+		}]
+	},
 
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
+	{
+		path: '/calendar',
+		component: Layout,
+		redirect: '/calendar',
+		children: [{
+			path: 'calendar',
+			name: 'Calendar',
+			component: () => import('@/views/calendar/index'),
+			meta: { title: 'Calendar', icon: 'calendar' }
+		}]
+	},
 
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
+	{
+		path: '/users',
+		component: Layout,
+		redirect: '/users',
+		children: [{
+			path: 'users',
+			name: 'Users',
+			component: () => import('@/views/users/index'),
+			meta: { title: 'Users', icon: 'user' }
+		}]
+	},
 
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+	{
+		path: '/notifications',
+		component: Layout,
+		redirect: '/notifiations',
+		children: [{
+			path: 'notifiations',
+			name: 'Notifiations',
+			component: () => import('@/views/notifications/index'),
+			meta: { title: 'Notifiations', icon: 'notification' }
+		}]
+	},
+
+	{
+		path: '/settings',
+		component: Layout,
+		redirect: '/settings',
+		children: [{
+			path: 'settings',
+			name: 'Settings',
+			component: () => import('@/views/settings/index'),
+			meta: { title: 'Settings', icon: 'setting' }
+		}]
+	},
+
+	// 404 page must be placed at the end !!!
+	{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+	// mode: 'history', // require service support
+	scrollBehavior: () => ({ y: 0 }),
+	routes: constantRoutes
 })
 
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+	const newRouter = createRouter()
+	router.matcher = newRouter.matcher // reset router
 }
 
 export default router
