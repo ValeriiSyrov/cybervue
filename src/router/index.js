@@ -38,6 +38,12 @@ export const constantRoutes = [
 	},
 
 	{
+		path: '/signup',
+		component: () => import('@/views/signup/index'),
+		hidden: true
+	},
+
+	{
 		path: '/404',
 		component: () => import('@/views/404'),
 		hidden: true
@@ -76,6 +82,18 @@ export const constantRoutes = [
 			name: 'Articles',
 			component: () => import('@/views/articles/index'),
 			meta: { title: 'Articles', icon: 'articles' }
+		}]
+	},
+
+	{
+		path: '/edit',
+		component: Layout,
+		redirect: '/edit/edit',
+		hidden: true,
+		children: [{
+			path: 'edit/:id',
+			name: 'Edit',
+			component: () => import('@/views/edit_article/index'),
 		}]
 	},
 

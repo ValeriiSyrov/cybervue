@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, signup } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -17,15 +17,19 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_USER_INFO: (state, user) => {
+    state.user = user
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const username = userInfo.login
+    const password = userInfo.password
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ login: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -39,18 +43,36 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      commit('SET_NAME', 'Dmytro') // name
+      commit('SET_AVATAR', 'https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png') // avatar
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+      resolve()
+      // getInfo(state.token).then(response => {
+      //   const { data } = response
 
-        const { name, avatar } = data
+      //   if (!data) {
+      //     reject('Verification failed, please Login again.')
+      //   }
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
+      //   const { name, avatar } = data
+
+      //   commit('SET_NAME', 'Dmytro') // name
+      //   commit('SET_AVATAR', 'https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png') // avatar
+      //   resolve(data)
+      // }).catch(error => {
+      //   reject(error)
+      // })
+    })
+  },
+
+  signup({  }, signupData) {
+    console.log('w')
+    console.log(signupData)
+    return new Promise((resolve, reject) => {
+      signup(signupData).then(() => {
+
+
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -87,4 +109,3 @@ export default {
   mutations,
   actions
 }
-

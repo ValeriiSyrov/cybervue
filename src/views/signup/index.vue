@@ -1,20 +1,35 @@
 <template>
-	<div class="login-container">
-		<el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+	<div class="signup-container">
+		<el-form ref="loginForm" :model="signupForm" :rules="signupRules" class="signup-form" auto-complete="on" label-position="left">
 
 			<div class="title-container">
-				<h3 class="title">Login Form</h3>
+				<h3 class="title">SignUp Form</h3>
 			</div>
 
-			<el-form-item prop="username">
+			<el-form-item prop="login">
 				<span class="svg-container">
 					<svg-icon icon-class="user" />
 				</span>
 				<el-input
 					ref="username"
-					v-model="loginForm.login"
+					v-model="signupForm.login"
 					placeholder="Username"
 					name="username"
+					type="text"
+					tabindex="1"
+					auto-complete="on"
+				/>
+			</el-form-item>
+
+            <el-form-item prop="email">
+				<span class="svg-container">
+					<svg-icon icon-class="user" />
+				</span>
+				<el-input
+					ref="email"
+					v-model="signupForm.email"
+					placeholder="Email"
+					name="email"
 					type="text"
 					tabindex="1"
 					auto-complete="on"
@@ -28,36 +43,29 @@
 				<el-input
 					:key="passwordType"
 					ref="password"
-					v-model="loginForm.password"
+					v-model="signupForm.password"
 					:type="passwordType"
 					placeholder="Password"
 					name="password"
 					tabindex="2"
 					auto-complete="on"
-					@keyup.enter.native="handleLogin"
 				/>
 				<span class="show-pwd" @click="showPwd">
 					<svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
 				</span>
 			</el-form-item>
 
-			<el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+			<el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Submit</el-button>
 
-			<div class="to-signup">
-				<router-link to="/signup">Sign Up</router-link>
+            <div class="to-login">
+				<router-link to="/login">Login</router-link>
 			</div>
-
-			<div class="tips">
-				<span style="margin-right:20px;">username: admin</span>
-				<span> password: any</span>
-			</div>
-
 		</el-form>
 	</div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validUsername, isvalidEmail } from '@/utils/validate'
 
 export default {
 	name: 'Login',
@@ -75,15 +83,26 @@ export default {
 			} else {
 				callback()
 			}
-		}
+        }
+
+        const validateEmail = (rule, value, callback) => {
+			if (!isvalidEmail(value)) {
+				callback(new Error('Please enter the correct email'))
+			} else {
+				callback()
+			}
+        }
+
 		return {
-			loginForm: {
-				login: 'userTest',
-				password: '12345'
+			signupForm: {
+				login: '',
+                password: '',
+                email: ''
 			},
-			loginRules: {
+			signupRules: {
 				login: [{ required: true, trigger: 'blur', validator: validateUsername }],
-				password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+                password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+                email: [{ required: true, trigger: 'blur', validator: validateEmail }]
 			},
 			loading: false,
 			passwordType: 'password',
@@ -113,8 +132,8 @@ export default {
 			this.$refs.loginForm.validate(valid => {
 				if (valid) {
 					this.loading = true
-					this.$store.dispatch('user/login', this.loginForm).then(() => {
-						this.$router.push({ path: this.redirect || '/' })
+					this.$store.dispatch('user/signup', this.signupForm).then(() => {
+						this.$router.push('/login')
 						this.loading = false
 					}).catch(() => {
 						this.loading = false
@@ -138,13 +157,13 @@ $light_gray:#fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-	.login-container .el-input input {
+	.signup-container .el-input input {
 		color: $cursor;
 	}
 }
 
 /* reset element-ui css */
-.login-container {
+.signup-container {
 	.el-input {
 		display: inline-block;
 		height: 47px;
@@ -181,13 +200,13 @@ $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 
-.login-container {
+.signup-container {
 	min-height: 100%;
 	width: 100%;
 	background-color: $bg;
 	overflow: hidden;
 
-	.login-form {
+	.signup-form {
 		position: relative;
 		width: 520px;
 		max-width: 100%;
@@ -238,7 +257,7 @@ $light_gray:#eee;
 		user-select: none;
 	}
 }
-.to-signup {
+.to-login {
     font-size: 16px;
     color: #eee;
     margin: 0px auto 40px auto;
