@@ -1,9 +1,9 @@
 <template>
-    <div class="dashboard-container">
+    <div class="dashboard-container" v-loading="loading">
 		<div class="header">
 			<el-row :gutter="20">
 				<el-col v-for="(block, index) in headerStatBlock" :key="index"
-						:xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+						:xs="24" :sm="24" :md="8" :lg="8" :xl="8">
 					<el-card>
 						<span v-text="block.count" />
 						<h2 v-text="`${block.name.split('_').join(' ').toUpperCase()}`" />
@@ -15,7 +15,7 @@
 		<div class="main">
 			<el-row :gutter="20">
 				<el-col v-for="(block, index) in mainData" :key="index"
-						:xs="24" :sm="8" :md="8" :lg="8" :xl="8">
+						:xs="24" :sm="24" :md="12" :lg="8" :xl="8">
 					<block-section :block="block" />
 				</el-col>
 			</el-row>
@@ -67,7 +67,7 @@ export default {
 		categories() {
 			return {
 				name: 'categories',
-				list: this.$store.state.home.pending_articles
+				list: this.$store.state.home.categories
 			}
 		},
 		mainData() {
@@ -81,11 +81,13 @@ export default {
 	},
 	data() {
 		return {
-
+			loading: true
 		}
 	},
 	created() {
-		this.$store.dispatch('home/getHomeInfo', [1, 1])
+		this.$store.dispatch('home/getHomeInfo', {page: 1, limit: 10}).then(() => {
+			this.loading = false
+		})
 	}
 }
 </script>
@@ -116,16 +118,16 @@ export default {
 .dashboard-container >>> .header .el-card__body {
 	text-align: center;
 }
-.dashboard-container >>> .el-col span {
+.dashboard-container >>> .header .el-col span {
 	font-size: 20px;
 }
-.dashboard-container >>> .el-col:first-child span {
+.dashboard-container >>> .header .el-col:first-child span {
 	color: #fd6d82;
 }
-.dashboard-container >>> .el-col:nth-child(2) span {
+.dashboard-container >>> .header .el-col:nth-child(2) span {
 	color: #26d29c;
 }
-.dashboard-container >>> .el-col:nth-child(3) span {
+.dashboard-container >>> .header .el-col:nth-child(3) span {
 	color: #ffab74;
 }
 .dashboard-container >>> .el-col h2 {

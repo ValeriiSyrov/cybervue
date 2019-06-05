@@ -42,8 +42,6 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    console.log(response)
-
     if (response.status !== 200) {
       Message({
         message: res.message || 'Error',

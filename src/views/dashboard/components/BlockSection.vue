@@ -1,30 +1,39 @@
 <template>
-    <el-card>
+    <el-card v-loading="loading">
         <el-header>
             <h3 v-text="`${block.name.split('_').join(' ').toUpperCase()}`" />
         </el-header>
 
         <el-main>
-            <div class="list-container">
+            <div v-if="block.list.docs.length" class="list-container">
                 <ul>
-                    <li v-for="(item, index) in block.list" :key="index">
+                    <li v-for="(item, index) in block.list.docs" :key="index" @click="toItemClick(item)">
                         <el-row>
-                            <el-col :span="6">
-                                <img :src="item.img" alt="">
+                            <el-col :span="4">
+                                <div class="img-container">
+                                    <img :src="`http://192.168.0.83:7000/${item.img}`" alt="">
+                                    <!-- <img :src="`https://www.w3schools.com/html/workplace.jpg`" alt=""> -->
+                                </div>
                             </el-col>
-                            <el-col :span="18">
-                                <p v-text="item.name" />
+                            <el-col :span="20">
+                                <p v-text="item.title" />
                             </el-col>
                        </el-row>
                     </li>
                 </ul>
             </div>
+            <div v-else class="no-data-container">
+                <span>No data</span>
+            </div>
         </el-main>
 
-        <el-footer>
+        <el-footer v-if="block.name !== 'categories' && block.list.docs.length">
             <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page.sync="pagination_page"
                 layout="prev, pager, next"
-                :total="50">
+                :total="block.list.totalDocs">
+                <!-- :total="20"> -->
             </el-pagination>
         </el-footer>
     </el-card>
@@ -34,18 +43,87 @@
 export default {
     props: {
         block: Object
+    },
+    computed: {
+        dataType() {
+            let type
+            switch (this.block.name) {
+                case 'recent_publishing': type = 'getArticle'; break;
+                case 'pending_articles': type = 'getArticle'; break;
+                case 'categories': type = 'getCategory'; break;
+            }
+
+            return type
+        }
+    },
+    data() {
+        return {
+            pagination_page: 0,
+            loading: false
+        }
+    },
+    methods: {
+        handleCurrentChange(val) {
+            let categories = {page: val, limit: 10}
+            let articles = [
+                {type: (this.block.name == 'pending_articles') ? 'SET_PENDING_ARTICLES' : 'SET_RECENT_PUBLISHING'},
+                {
+                    'status': (this.block.name == 'pending_articles') ? 'waiting' : 'approved',
+                    'pagination': {
+                        'limit': 10,
+                        'page': val
+                    }
+                }
+            ]
+
+            let data = (this.block.name == 'categories') ? categories : articles
+
+            this.loading = true
+            this.$store.dispatch(`home/${this.dataType}`, data).then(() => {
+                this.loading = false
+            })
+        },
+        toItemClick(item) {
+            console.log(item)
+            if (this.block.name == 'categories') {
+                let data = {
+                    limit: 10,
+                    page: 1,
+                    categoryId: item._id
+                }
+
+
+                this.$store.dispatch('home/getHomeInfo', data).then(() => {
+
+                })
+            } else {
+                // this.$store.commit('SET_EDITABLE_ARTICLE', item)
+                this.$router.push(`/edit/edit/${item._id}`)
+            }
+        }
     }
 }
 </script>
 
 <style>
-.el-header {
+.no-data-container {
+    text-align: center;
+    font-size: 16px;
+    color: #000;
+}
+.dashboard-container .el-header {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 70px !important;
 }
-h3 {
+.dashboard-container .main .el-card__body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.dashboard-container  h3 {
     color: #e83031;
     text-align: center;
     margin-top: 8px;
@@ -66,6 +144,11 @@ p {
     line-height: 18px;
     max-height: 54px;
     overflow: hidden;
+}
+.list-container .img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .list-container img {
     width: 50px;

@@ -1,119 +1,48 @@
 <template>
-    <div class="dashboard-container">
-        <el-header>
-            <h2>Edit Article</h2>
-        </el-header>
-
+    <div class="pending-article-container">
         <el-main>
             <el-card>
-                 <el-form ref="registrationForm"
-                            :model="registrationForm"
-                            :rules="registrationRules"
-                            class="login-form"
-                            auto-complete="on"
-                            label-position="left">
-                        <h3 class="title">Registration</h3>
+                <el-header>
+                    <h2>Edit Article</h2>
+                </el-header>
 
-                        <el-form-item prop="username">
-                            <span class="svg-container">
-                                <svg-icon icon-class="user" />
-                            </span>
-                            <el-input v-model="registrationForm.username"
-                                    name="User name"
-                                    type="text"
-                                    auto-complete="on"
-                                    placeholder="User name" />
-                        </el-form-item>
+                <el-form ref="editableForm" :model="editableData" :rules="rules" label-width="150px">
+                    <el-form-item label="Title" prop="title">
+                        <el-input v-model="editableData.title"
+                                  placeholder="Title"/>
+                    </el-form-item>
 
-                        <el-form-item prop="fullName">
-                            <span class="svg-container">
-                                <svg-icon icon-class="user" />
-                            </span>
-                            <el-input v-model="registrationForm.fullName"
-                                    name="fullName"
-                                    type="text"
-                                    auto-complete="on"
-                                    placeholder="Full name" />
-                        </el-form-item>
+                    <el-form-item label="Category" prop="categoryId">
+                        <el-select v-model="editableData.categoryId" placeholder="Select category">
+                            <el-option v-for="(category, index) in categories" :key="index"
+                                       :value="category._id"
+                                       :label="category.title" />
+                        </el-select>
+                    </el-form-item>
 
-                        <el-form-item prop="password">
-                            <span class="svg-container">
-                                <svg-icon icon-class="password" />
-                            </span>
+                    <el-form-item label="Description" prop="description">
+                        <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 15}" v-model="editableData.description" placeholder="Enter description" />
+                    </el-form-item>
 
-                            <!-- @keyup.enter.native="handleLogin"  -->
-                            <el-input
-                                :type="pwdType"
-                                v-model="registrationForm.password"
-                                name="password"
-                                auto-complete="on"
-                                placeholder="Password"
-                            />
+                    <el-form-item label="Tag" prop="tag">
+                        <el-input v-model="editableData.tag" placeholder="Tag" />
+                    </el-form-item>
 
-                            <span class="show-pwd" @click="showPwd">
-                                <svg-icon icon-class="eye" />
-                            </span>
-                        </el-form-item>
+                    <el-form-item label="Recommendations" prop="rec">
+                        <el-input v-model="editableData.rec" placeholder="Recommendations"></el-input>
+                    </el-form-item>
 
-                        <el-form-item prop="phone">
-                            <span class="svg-container">
-                                <font-awesome-icon icon="phone" />
-                            </span>
-                            <el-input v-model="registrationForm.phone"
-                                    name="phone"
-                                    type="text"
-                                    auto-complete="on"
-                                    placeholder="Phone" />
-                        </el-form-item>
+                    <el-form-item label="Image" prop="file">
+                        <input  type="file" @change="onFileInput($event)">
+                    </el-form-item>
 
-                        <el-form-item prop="email">
-                            <span class="svg-container">
-                                <font-awesome-icon icon="envelope" />
-                            </span>
-                            <el-input v-model="registrationForm.email"
-                                    name="email"
-                                    type="text"
-                                    auto-complete="on"
-                                    placeholder="Email" />
-                        </el-form-item>
-
-                        <el-form-item prop="birthday">
-                            <span class="svg-container">
-                                <font-awesome-icon icon="calendar-alt" />
-                            </span>
-                            <el-date-picker
-                                prefix-icon="none"
-                                v-model="registrationForm.birthday"
-                                type="date"
-                                placeholder="Birthday"
-                                value-format="yyyy-MM-dd"
-                                :picker-options="pickerOptions">
-                            </el-date-picker>
-                        </el-form-item>
-
-                        <div class="gender-container">
-                            <el-radio-group v-model="registrationForm.gender">
-                                <el-radio border label="MALE">
-                                    <font-awesome-icon icon="mars" />
-                                    Male
-                                </el-radio>
-                                <el-radio border label="FEMALE">
-                                    <font-awesome-icon icon="venus" />
-                                    Female
-                                </el-radio>
-                            </el-radio-group>
-                        </div>
-
-                        <el-form-item>
-                            <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleRegistration">
-                                Sign in
-                            </el-button>
-                        </el-form-item>
-
-                        <div class="to-link">
-                            <router-link to="/login">Login</router-link>
-                        </div>
-                    </el-form>
+                    <el-form-item>
+                        <el-button :type="(this.article_type !== 'approved') ? 'success' : 'warning'"
+                                   plain
+                                   @click="onSubmit"
+                                   v-text="`${(this.article_type !== 'approved') ? 'Approve' : 'Edit'}`" />
+                    </el-form-item>
+                </el-form>
             </el-card>
         </el-main>
     </div>
@@ -121,7 +50,139 @@
 
 <script>
 export default {
+    computed: {
+        editableArticle() {
+            return this.$store.state.home.editable_article
+        },
+        categories() {
+            return this.$store.state.home.categories.docs
+        },
+    },
+    data() {
+        const validateTitle = (rule, value, callback) => {
+            if ( !(value.trim().length > 0) ) {
+                callback(new Error('Please enter the correct title'))
+            } else {
+                callback()
+            }
+        }
 
+        const validateCategory = (rule, value, callback) => {
+            if ( !(value.length > 0) ) {
+                callback(new Error('Please enter the correct category'))
+            } else {
+                callback()
+            }
+        }
+
+        const validateDesc = (rule, value, callback) => {
+            if (!(value.trim().length > 0)) {
+                callback(new Error('Please enter the correct description'))
+            } else {
+                callback()
+            }
+        }
+
+        const validateTag = (rule, value, callback) => {
+            if (!(value.trim().length > 0)) {
+                callback(new Error('Please enter the correct tags'))
+            } else {
+                callback()
+            }
+        }
+
+        const validateRecomendation = (rule, value, callback) => {
+            if (!(value.trim().length > 0)) {
+                callback(new Error('Please enter the correct recomendation'))
+            } else {
+                callback()
+            }
+        }
+
+        const validateFile = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('Please attach file'))
+            } else {
+                callback()
+            }
+        }
+
+        return {
+
+            editableData: {
+                title: '',
+                categoryId: '',
+                description: '',
+                tag: '',
+                rec: '',
+                files: ''
+            },
+
+            rules: {
+                title: [{ required: true, trigger: 'blur', validator: validateTitle }],
+                categoryId: [{ required: true, trigger: 'blur', validator: validateCategory }],
+                description: [{ required: true, trigger: 'blur', validator: validateDesc }],
+                tag: [{ required: true, trigger: 'blur', validator: validateTag }],
+                // rec: [{ required: false, trigger: 'blur', validator: validateRecomendation }],
+                // files: [{ required: false, trigger: 'blur', validator: validateFile }],
+            },
+
+            article_type: ''
+        }
+    },
+    methods: {
+        onFileInput(e) {
+            this.editableData.files = e.target.files[0]
+        },
+        handlerSubmit() {
+            let data = {
+
+            }
+
+            this.onSubmit(data)
+        },
+        onSubmit() {
+            this.$refs.editableForm.validate(valid => {
+				if (valid) {
+                    var form_data = new FormData();
+
+                    console.log(this.editableData)
+
+                    for ( var key in this.editableData ) {
+                        if (this.editableData[key]) {
+                            form_data.append(key, this.editableData[key]);
+                        }
+                    }
+
+                    if (this.article_type !== 'approved') {
+                        form_data.append('status', 'approved');
+                    }
+
+                    this.$store.dispatch('home/updateArticle', [form_data, this.$route.params.id])
+				} else {
+					console.log('error submit!!')
+					return false
+				}
+			})
+        }
+    },
+    created() {
+        this.$store.dispatch('home/getArticleById', this.$route.params.id).then(response => {
+            let data = {
+                title: response.data.title,
+                categoryId: response.data.categoryId._id,
+                description: response.data.description,
+                tag: response.data.tag.join(', '),
+                rec: '',
+                files: ''
+            }
+
+
+            this.article_type = response.data.status
+            console.log(this.article_type)
+            this.editableData = data
+        })
+    }
 }
 </script>
 
