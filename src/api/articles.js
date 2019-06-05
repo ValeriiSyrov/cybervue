@@ -8,7 +8,6 @@ export function createArticle(data) {
     })
 }
 
-
 export function updateArticle(data, id) {
     return request({
         url: `updateArticle/${id}`,
@@ -17,14 +16,12 @@ export function updateArticle(data, id) {
     })
 }
 
-
 export function deleteArticle(id) {
     return request({
         url: `deleteArticle/${id}`,
         method: 'delete'
     })
 }
-
 
 export function getArticle(data) {
     return request({

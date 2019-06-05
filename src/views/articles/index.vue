@@ -75,8 +75,8 @@
 					<template slot-scope="scope">
 						{{ scope.row.categoryId.title }}
 					</template>
-				</el-table-column>import moment from 'moment'
-import moment from 'moment'
+				</el-table-column>
+
 				<el-table-column label="taimport moment from 'moment'g" width="120">
 					<template slot="header">
 						<div class="header-col-container" >
