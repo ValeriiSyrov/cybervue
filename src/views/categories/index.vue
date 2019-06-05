@@ -43,7 +43,6 @@ export default {
 	name: 'Categories',
 	computed: {
 		category() {
-			console.log(this.$store.state.home.categories)
 			return this.$store.state.home.categories
 		}
 	},
@@ -62,11 +61,10 @@ export default {
 		},
 
 		removeCategory(id) {
-			console.log('remove category')
 			console.log(id)
-			// this.$store.dispatch('categories/deleteCategory', id).then(() => {
+			this.$store.dispatch('categories/deleteCategory', id).then(() => {
 				this.$store.dispatch('categories/deleteCategoryFromList', id)
-			// })
+			})
 		}
 	}
 }
@@ -87,6 +85,7 @@ export default {
 <style lang="scss">
 .categories {
 	&-header {
+		width: 100%;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;

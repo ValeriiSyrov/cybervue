@@ -18,11 +18,10 @@ export function updateArticle(data, id) {
 }
 
 
-export function deleteArticle(data) {
+export function deleteArticle(id) {
     return request({
-        url: 'deleteArticle',
-        method: 'delete',
-        data
+        url: `deleteArticle/${id}`,
+        method: 'delete'
     })
 }
 

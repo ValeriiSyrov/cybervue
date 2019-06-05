@@ -1,4 +1,4 @@
-import { getCategory, deleteCategoryUser } from '@/api/categories'
+import { getCategory, deleteCategory } from '@/api/categories'
 
 const state = {
     categories: {}
@@ -24,7 +24,7 @@ const actions = {
 
     deleteCategory({}, id) {
         return new Promise((resolve, reject) => {
-            deleteCategoryUser(id).then(response => {
+            deleteCategory(id).then(response => {
 
 
                 resolve()

@@ -29,7 +29,7 @@
 					</template>
 
 					<template slot-scope="scope">
-						{{ scope.row.publicationDate }}
+						{{ getDateFormat(scope.row.publicationDate) }}
 					</template>
 				</el-table-column>
 
@@ -41,9 +41,11 @@
 								width="300"
 								trigger="click" >
 
-								<el-input v-model="filtered_value.date"
-										  placeholder="Enter title"
-										  @keyup.enter.native="onTitleEnter" />
+								<input class="el-input__inner"
+									   type="text"
+									   placeholder="Enter title"
+									   v-model="filtered_value.title"
+									   @keyup.enter="onTitleEnter" />
 
 								<span slot="reference" v-text="'TITLE'"  />
 							</el-popover>
@@ -58,38 +60,39 @@
 				<el-table-column label="category" width="150">
 					<template slot="header">
 						<div class="header-col-container" >
-							<el-dropdown trigger="click">
+							<el-dropdown trigger="click" @command="onCategoryEnter">
 								<span v-text="'CATEGORY'" />
 
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item>Action 1</el-dropdown-item>
-									<el-dropdown-item>Action 2</el-dropdown-item>
-									<el-dropdown-item>Action 3</el-dropdown-item>
-									<el-dropdown-item disabled>Action 4</el-dropdown-item>
-									<el-dropdown-item divided>Action 5</el-dropdown-item>
+									<el-dropdown-item v-for="(category, index) in categories" :key="index"
+													  v-text="category.title"
+													  :command="category" />
 								</el-dropdown-menu>
 							</el-dropdown>
 						</div>
 					</template>
+
 					<template slot-scope="scope">
 						{{ scope.row.categoryId.title }}
 					</template>
-				</el-table-column>
-
-				<el-table-column label="tag" width="120">
+				</el-table-column>import moment from 'moment'
+import moment from 'moment'
+				<el-table-column label="taimport moment from 'moment'g" width="120">
 					<template slot="header">
 						<div class="header-col-container" >
-							<el-dropdown trigger="click">
-								<span v-text="'TAG'" />
+							<el-popover
+								placement="bottom"
+								width="300"
+								trigger="click" >
 
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item>Action 1</el-dropdown-item>
-									<el-dropdown-item>Action 2</el-dropdown-item>
-									<el-dropdown-item>Action 3</el-dropdown-item>
-									<el-dropdown-item disabled>Action 4</el-dropdown-item>
-									<el-dropdown-item divided>Action 5</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
+								<input class="el-input__inner"
+									   type="text"
+									   placeholder="Enter tags"
+									   v-model="filtered_value.tag"
+									   @keyup.enter="onTagEnter" />
+
+								<span slot="reference" v-text="'TAG'"  />
+							</el-popover>
 						</div>
 					</template>
 
@@ -132,53 +135,63 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 
 export default {
 	name: 'Articles',
 	computed: {
 		articles() {
-			console.log(this.$store.state.articles.articles)
 			return this.$store.state.articles.articles
 		},
+		categories() {
+            return this.$store.state.home.categories.docs
+        },
 		requestData() {
 			let data = {
-				tag: (this.filtered_props.tag) ? '' : '', // ["team4"],
-				//categoryId: (this.filtered_props.tag) ? '' : '', // ["5cf38dc574ae9f22a0c2c67f"],
-				title: (this.filtered_props.title) ? '' : '', // "dota",
+				tag: (this.filtered_props.tag) ? this.filtered_value.tag.split(', ') : '',
+				categoryId: (this.filtered_props.category) ? this.filtered_value.category._id : '',
+				title: (this.filtered_props.title) ? this.filtered_value.title : '', // "dota",
 				// status: "",
-				publicationDate: {
-					from: "2019-06-03T09:29:38.000+00:00",
-					to: "2019-06-12T09:49:38.000+00:00"
-				},
+
+				// publicationDate: {
+				// 	from: "2019-06-03T09:29:38.000+00:00",
+				// 	to: "2019-06-12T09:49:38.000+00:00"
+				// },
+
 				sort: {
-					publicationDate:-1,
-					status: 1
+					status: (this.filtered_props.status) ? this.filtered_value.status : '',
+					publicationDate: -1
 				},
 				pagination: {
 					limit: 10,
 					page: this.pagination_page
 				}
 			}
+
+			return data
 		}
 	},
 	data() {
 		return {
 			loading: true,
-			pagination_page: null,
+			pagination_page: 1,
 
 			filtered_props: {
 				date: false,
 				title: false,
 				category: false,
-				tag: false
+				tag: false,
+				status: false
 			},
 
 			filtered_value: {
 				date: '',
 				title: '',
 				category: '',
-				tag: ''
-			}
+				tag: '',
+				status: 0
+			},
+			input: ''
 		}
 	},
 	methods: {
@@ -187,7 +200,10 @@ export default {
             return (this.pagination_page - 1) * 10 + index + 1
 		},
 
-		// date picker
+		// publication date filter
+		getDateFormat(date) {
+			return moment(date).format('DD.MM.YYYY HH:mm')
+		},
 		datePickerFocus() {
 			this.$refs.datepicker.$children[0].focus()
 		},
@@ -197,11 +213,36 @@ export default {
 
 
 		onTitleEnter() {
+			this.filtered_props.title = true
+			this.pagination_page = 1
 
+			this.getTableData()
 		},
 
-		onStatusFilter() {
+		// category filter
+		onCategoryEnter(val) {
+			this.filtered_props.category = true
+			this.filtered_value.category = val
+			this.pagination_page = 1
 
+			this.getTableData()
+		},
+
+		//  tag filter
+		onTagEnter() {
+			this.filtered_props.tag = true
+			this.pagination_page = 1
+
+			this.getTableData()
+		},
+
+		// status filter
+		onStatusFilter() {
+			this.filtered_props.status = true
+			this.filtered_value.status = (this.filtered_value.status < 1) ? 1 : -1
+			this.pagination_page = 1
+
+			this.getTableData()
 		},
 
 		// settings btns
@@ -209,28 +250,24 @@ export default {
 			console.log(id)
 		},
 		handlerDelete(id) {
-			console.log(id)
-		},
-		handlerEdit(id) {
-			console.log(id)
-		},
-		handleCurrentChange(val) {
-
-			let data = {
-				"status": "",
-
-				"pagination": {
-					"limit": 10,
-					"page": val
-				}
-			}
-
 			this.loading = true;
-			this.$store.dispatch('articles/getArticle', data).then(() => {
-				this.loading = false;
+			this.$store.dispatch('articles/deleteArticle', id).then(() => {
+				this.$store.dispatch('articles/getArticle', this.requestData).then(() => {
+					this.loading = false;
+				})
 			})
 		},
+		handlerEdit(id) {
+			this.$router.push(`/edit/edit/${id}`)
+		},
+
+		handleCurrentChange(val) {
+
+			this.getTableData()
+		},
 		getTableData() {
+			console.log(this.requestData)
+
 			this.loading = true;
 			this.$store.dispatch('articles/getArticle', this.requestData).then(() => {
 				this.loading = false;
@@ -238,22 +275,7 @@ export default {
 		}
 	},
 	created() {
-		let data = {
-			"status": "",
-
-			sort: {
-				publicationDate:-1,
-				status: 1
-
-			},
-
-			"pagination": {
-				"limit": 10,
-				"page": 1
-			}
-		}
-
-		this.$store.dispatch('articles/getArticle', data).then(() => {
+		this.$store.dispatch('articles/getArticle', this.requestData).then(() => {
 			this.loading = false;
 		})
 	}

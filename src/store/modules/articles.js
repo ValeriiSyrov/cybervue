@@ -1,4 +1,4 @@
-import { getArticle } from '@/api/articles'
+import { getArticle, deleteArticle } from '@/api/articles'
 
 const state = {
     articles: {}
@@ -6,8 +6,7 @@ const state = {
 
 const mutations = {
     SET_ARTICLES: (state, articles) => {
-        state.articles = articles,
-        editable_article = {}
+        state.articles = articles
     },
 }
 
@@ -24,6 +23,16 @@ const actions = {
             })
         })
     },
+
+    deleteArticle({}, id) {
+        return new Promise((resolve, reject) => {
+            deleteArticle(id).then(response => {
+                resolve()
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 }
 
 export default {

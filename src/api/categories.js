@@ -11,9 +11,9 @@ export function getCategory(data) {
 }
 
 
-export function deleteCategoryUser(id) {
+export function deleteCategory(id) {
     return request({
-        url: `deleteCategoryUser/${id}`,
+        url: `deleteCategory/${id}`,
         method: 'delete'
     })
 }
