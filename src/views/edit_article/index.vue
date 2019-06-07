@@ -147,9 +147,9 @@ export default {
                         }
                     }
 
-                    if (this.article_type !== 'approved') {
+                    // if (this.article_type !== 'approved') {
                         form_data.append('status', 'approved');
-                    }
+                    // }
 
                     this.$store.dispatch('home/updateArticle', [form_data, this.$route.params.id])
 				} else {
