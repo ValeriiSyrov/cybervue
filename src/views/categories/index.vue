@@ -14,9 +14,9 @@
 			<el-main class="categories-main">
 				<el-row :gutter="20">
 					<el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6"
-							v-for="(item, index) in category.categoryList" :key="index">
+							v-for="(item, index) in category.docs" :key="index">
 						<div class="categoty-item-container">
-							<img :src="`http://192.168.0.83:7000/${item.img}`" :alt="item.title">
+							<img :src="`https://cybersp.herokuapp.com/${item.img}`" :alt="item.title">
 
 							<div class="centered-block">
 								<div class="name-wrapper">

@@ -55,7 +55,7 @@ const actions = {
     getCategory({commit}, data) {
         return new Promise((resolve, reject) => {
             getCategory(data).then(response => {
-                commit('SET_CATEGORIES', response.data.categoryList)
+                commit('SET_CATEGORIES', response.data)
 
                 resolve()
             }).catch(error => {

@@ -150,7 +150,7 @@ export default {
 			return this.$store.state.calendar.events
 		},
 		categories() {
-            return this.$store.state.home.categories
+            return this.$store.state.home.categories.docs
         },
 	},
 	data() {

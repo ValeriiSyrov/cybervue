@@ -11,8 +11,7 @@
                         <el-row>
                             <el-col :span="4">
                                 <div class="img-container">
-                                    <img :src="`http://192.168.0.83:7000/${item.img}`" alt="">
-                                    <!-- <img :src="`https://www.w3schools.com/html/workplace.jpg`" alt=""> -->
+                                    <img :src="`https://cybersp.herokuapp.com/${item.img}`" alt="">
                                 </div>
                             </el-col>
                             <el-col :span="20">

@@ -162,7 +162,7 @@ export default {
 			return this.$store.state.articles.articles
 		},
 		categories() {
-            return this.$store.state.home.categories.categoryList
+            return this.$store.state.home.categories.docs
         },
 		requestData() {
 			let data = {
