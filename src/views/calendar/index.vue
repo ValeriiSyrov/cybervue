@@ -38,7 +38,7 @@
 
 				<el-table-column label="CATEGORY" width="150">
 					<template slot-scope="scope">
-						{{ scope.row.categoryId.title }}
+						{{ (scope.row.categoryId) ? scope.row.categoryId.title : '' }}
 					</template>
 				</el-table-column>
 
