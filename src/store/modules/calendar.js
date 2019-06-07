@@ -24,9 +24,9 @@ const actions = {
         })
     },
 
-    updateEvent({}, data) {
+    updateEvent({}, [data, id]) {
         return new Promise((resolve, reject) => {
-            updateEvent(data).then(response => {
+            updateEvent(data, id).then(response => {
 
                 resolve(response)
             }).catch(error => {
@@ -35,9 +35,9 @@ const actions = {
         })
     },
 
-    deleteEvent({}, data) {
+    deleteEvent({}, id) {
         return new Promise((resolve, reject) => {
-            deleteEvent(data).then(response => {
+            deleteEvent(id).then(response => {
 
                 resolve(response)
             }).catch(error => {

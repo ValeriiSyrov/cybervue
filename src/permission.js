@@ -32,7 +32,7 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('home/getHomeInfo', [1, 10])
+          await store.dispatch('home/getHomeInfo', {page: 1, limit: 10})
 
           // await store.dispatch('user/getInfo')
 

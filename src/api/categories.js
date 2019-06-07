@@ -23,19 +23,15 @@ export function createCategory(data) {
     return request({
         url: 'createCategory',
         method: 'post',
-        params: {
-            data
-        }
+        data
     })
 }
 
 
-export function updateCategory(data) {
+export function updateCategory(data, id) {
     return request({
-        url: 'updateCategory',
+        url: `updateCategory/${id}`,
         method: 'put',
-        params: {
-            data
-        }
+        data
     })
 }

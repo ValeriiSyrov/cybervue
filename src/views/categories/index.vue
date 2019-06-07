@@ -5,7 +5,7 @@
 				<div class="categories-header">
 					<h3>categories</h3>
 					<el-button type="danger"
-							   @click="addCategory" >
+							   @click="showModal" >
 						Add category
 					</el-button>
 				</div>
@@ -14,7 +14,7 @@
 			<el-main class="categories-main">
 				<el-row :gutter="20">
 					<el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6"
-							v-for="(item, index) in category.docs" :key="index">
+							v-for="(item, index) in category.categoryList" :key="index">
 						<div class="categoty-item-container">
 							<img :src="`http://192.168.0.83:7000/${item.img}`" :alt="item.title">
 
@@ -24,7 +24,7 @@
 								</div>
 
 								<div class="btns-wrapper">
-									<el-button type="success" icon="el-icon-edit-outline" circle plain @click="editCategory(item._id)" />
+									<el-button type="success" icon="el-icon-edit-outline" circle plain @click="showModal(item)" />
 									<el-button type="success" icon="el-icon-delete" circle plain @click="removeCategory(item._id)" />
 								</div>
 							</div>
@@ -33,6 +33,34 @@
 				</el-row>
 			</el-main>
 		</el-card>
+
+		<el-dialog title="Edit category"
+				   :visible.sync="modal"
+				   width="75%"
+			       :before-close="handleClose">
+
+			<el-form ref="editableCategory" :model="editableCategory" :rules="rules" label-width="150px">
+				<el-form-item label="Title" prop="title">
+					<el-input v-model="editableCategory.title"
+								placeholder="Title"/>
+				</el-form-item>
+
+				<el-form-item label="Description" prop="description">
+					<el-input type="textarea" :autosize="{ minRows: 5, maxRows: 15}" v-model="editableCategory.description" placeholder="Enter description" />
+				</el-form-item>
+
+				<el-form-item label="Image" prop="files">
+					<input  type="file" @change="onFileInput($event)">
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="handleClose">Cancel</el-button>
+				<el-button :type="(this.editable_category) ? 'success' : 'warning'"
+						   plain
+						   @click="handleConfirm"
+						   v-text="(!this.editable_category) ? 'Create' : 'Update'" />
+			</div>
+		</el-dialog>
     </div>
 </template>
 
@@ -47,25 +75,115 @@ export default {
 		}
 	},
 	data() {
-		return {
+		const validateTitle = (rule, value, callback) => {
+            if ( !(value.trim().length > 0) ) {
+                callback(new Error('Please enter the correct title'))
+            } else {
+                callback()
+            }
+        }
 
+        const validateDesc = (rule, value, callback) => {
+            if (!(value.trim().length > 0)) {
+                callback(new Error('Please enter the correct description'))
+            } else {
+                callback()
+            }
+		}
+
+		const validateFile = (rule, value, callback) => {
+            if (!(value || this.editable_category)) {
+                callback(new Error('Please attach the file'))
+            } else {
+                callback()
+            }
+		}
+
+		return {
+			modal: false,
+			editable_category: false,
+			editable_category_id: null,
+
+			editableCategory: {
+                title: '',
+                description: '',
+                files: ''
+            },
+
+            rules: {
+                title: [{ required: true, trigger: 'blur', validator: validateTitle }],
+				description: [{ required: true, trigger: 'blur', validator: validateDesc }],
+				files: [{ required: true, trigger: 'blur', validator: validateFile }],
+            },
 		}
 	},
 	methods: {
-		addCategory(item) {
-			console.log('add category')
+		showModal(category) {
+			this.modal = true
+
+			if (category._id) {
+				this.editable_category = true
+				this.editable_category_id = category._id
+
+				this.editableCategory.title = category.title
+				this.editableCategory.description = category.description
+			}
 		},
 
-		editCategory(item) {
-			console.log('edit category')
+		onFileInput(e) {
+            this.editableCategory.files = e.target.files[0]
+        },
+
+		handleConfirm() {
+			this.$refs.editableCategory.validate(valid => {
+				if (valid) {
+					let form_data = new FormData();
+					for ( var key in this.editableCategory ) {
+                        if (this.editableCategory[key]) {
+                            form_data.append(key, this.editableCategory[key]);
+                        }
+					}
+
+					if (this.editable_category) this.editCategory(form_data)
+					else this.addCategory(form_data)
+				} else {
+					console.log('error submit!!')
+					return false
+				}
+			})
+		},
+
+		addCategory(data) {
+			this.$store.dispatch('categories/createCategory', data).then(response => {
+				this.handleClose()
+			})
+		},
+
+		editCategory(data) {
+			this.$store.dispatch('categories/updateCategory', [data, this.editable_category_id]).then(response => {
+				this.handleClose()
+			})
 		},
 
 		removeCategory(id) {
-			console.log(id)
 			this.$store.dispatch('categories/deleteCategory', id).then(() => {
 				this.$store.dispatch('categories/deleteCategoryFromList', id)
 			})
-		}
+		},
+
+		handleClose() {
+			this.$refs.editableCategory.resetFields();
+
+			this.modal = false,
+			this.editable_category = false,
+			this.editable_category_id = null,
+
+			this.editableCategory = {
+                title: '',
+                description: '',
+                files: ''
+            }
+		},
 	}
 }
 </script>

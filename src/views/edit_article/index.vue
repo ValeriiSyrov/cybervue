@@ -134,13 +134,6 @@ export default {
         onFileInput(e) {
             this.editableData.files = e.target.files[0]
         },
-        handlerSubmit() {
-            let data = {
-
-            }
-
-            this.onSubmit(data)
-        },
         onSubmit() {
             this.$refs.editableForm.validate(valid => {
 				if (valid) {

@@ -16,15 +16,33 @@
 								 :index="indexMethod" />
 
 				<el-table-column width="200">
-					<template slot="header">
+					<template slot="header" slot-scope="scope" >
 						<div class="header-col-container" >
-							<span v-text="'PUBLICATION DATE'" @click="datePickerFocus" />
+                            <el-popover
+								placement="bottom"
+								width="500"
+								trigger="click"
+                                popper-class="date-input-popover" >
 
-							<el-date-picker
-								ref="datepicker"
-								type="date"
-								v-model="filtered_value.date"
-								@change="onChooseDate" />
+                                <el-date-picker ref="datepicker"
+                                                type="date"
+                                                v-model="filtered_value.date"
+                                                placeholder="Pick date"
+                                                @change="onChooseDate('date')"
+												value-format="yyyy-MM-dd" />
+
+                                <span style="margin-bottom: 10px; display: inline-block; text-align: center; width: 100%;">or</span>
+
+                                <el-date-picker ref="daterangepicker"
+                                                type="daterange"
+                                                v-model="filtered_value.date"
+                                                start-placeholder="Start Date"
+                                                end-placeholder="End Date"
+                                                @change="onChooseDate('daterange')"
+												value-format="yyyy-MM-dd" />
+
+							    <span slot="reference" v-text="'PUBLICATION DATE'"  />
+                            </el-popover>
 						</div>
 					</template>
 
@@ -144,19 +162,13 @@ export default {
 			return this.$store.state.articles.articles
 		},
 		categories() {
-            return this.$store.state.home.categories.docs
+            return this.$store.state.home.categories.categoryList
         },
 		requestData() {
 			let data = {
 				tag: (this.filtered_props.tag) ? this.filtered_value.tag.split(', ') : '',
 				categoryId: (this.filtered_props.category) ? this.filtered_value.category._id : '',
-				title: (this.filtered_props.title) ? this.filtered_value.title : '', // "dota",
-				// status: "",
-
-				// publicationDate: {
-				// 	from: "2019-06-03T09:29:38.000+00:00",
-				// 	to: "2019-06-12T09:49:38.000+00:00"
-				// },
+                title: (this.filtered_props.title) ? this.filtered_value.title : '',
 
 				sort: {
 					status: (this.filtered_props.status) ? this.filtered_value.status : '',
@@ -166,7 +178,20 @@ export default {
 					limit: 10,
 					page: this.pagination_page
 				}
-			}
+            }
+
+            if (this.filtered_props.date) {
+
+                let publicationDate = (this.filtered_props.date == 'daterange' ) ?
+                    {
+                        from: this.filtered_value.date[0],
+                        to: this.filtered_value.date[1]
+                    } : {
+                        current: this.filtered_value.date
+                    }
+
+                data.publicationDate = publicationDate
+            }
 
 			return data
 		}
@@ -184,6 +209,7 @@ export default {
 				status: false
 			},
 
+
 			filtered_value: {
 				date: '',
 				title: '',
@@ -191,7 +217,8 @@ export default {
 				tag: '',
 				status: 0
 			},
-			input: ''
+
+			datepicker_type: 'dates'
 		}
 	},
 	methods: {
@@ -203,15 +230,17 @@ export default {
 		// publication date filter
 		getDateFormat(date) {
 			return moment(date).format('DD.MM.YYYY HH:mm')
-		},
-		datePickerFocus() {
-			this.$refs.datepicker.$children[0].focus()
-		},
-		onChooseDate() {
-			console.log(this.date)
-		},
+        },
 
+        // date filter
+		onChooseDate(type) {
+            this.filtered_props.date = (this.filtered_value.date) ? type : false
+            this.pagination_page = 1
 
+			this.getTableData()
+        },
+
+        // title filter
 		onTitleEnter() {
 			this.filtered_props.title = true
 			this.pagination_page = 1
@@ -266,8 +295,6 @@ export default {
 			this.getTableData()
 		},
 		getTableData() {
-			console.log(this.requestData)
-
 			this.loading = true;
 			this.$store.dispatch('articles/getArticle', this.requestData).then(() => {
 				this.loading = false;
@@ -289,7 +316,7 @@ export default {
 
 		.table-btns-wrapper {
 			display: flex;
-			justify-content: flex-start;
+			justify-content: space-evenly;
 			align-items: center;
 		}
 
@@ -311,8 +338,15 @@ export default {
 		}
 
 		.header-col-container .el-date-editor {
-			height: 0;
+			// height: 0;
 		}
 	}
+}
+.date-input-popover {
+    max-width: 100%;
+}
+.date-input-popover .el-date-editor {
+    width: 100%;
+    margin-bottom: 10px;
 }
 </style>

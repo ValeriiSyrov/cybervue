@@ -21,6 +21,9 @@ const mutations = {
     SET_CATEGORIES: (state, categories) => {
         state.categories = categories
     },
+    ADD_NEW_CATEGORY: (state, category) => {
+        state.categories.docs.push(category)
+    },
     SET_USERS_COUNT: (state, users) => {
         state.users = users
     },
