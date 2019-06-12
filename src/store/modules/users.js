@@ -1,4 +1,4 @@
-import { getUsers, deleteUser, updateUser, createUser } from '@/api/users'
+import { getUsers, deleteUser, updateUser, createUser, setAllowedCategories } from '@/api/users'
 
 const state = {
     users: {}
@@ -56,25 +56,14 @@ const actions = {
         })
     },
 
-    sendUserNotifiction({}, data) {
+    setAllowedCategories({}, data) {
         return new Promise((resolve, reject) => {
-            console.log(data)
-            /* sendUserNotifiction().then(response => {
+            setAllowedCategories(data).then(response => {
 
+                resolve(response)
             }).catch(error => {
-
-            }) */
-        })
-    },
-
-    sendNotifiction({}, data) {
-        return new Promise((resolve, reject) => {
-            console.log(data)
-            /* sendNotifiction().then(response => {
-
-            }).catch(error => {
-
-            }) */
+                reject(error)
+            })
         })
     }
 }

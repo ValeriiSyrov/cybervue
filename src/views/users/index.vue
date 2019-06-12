@@ -241,8 +241,8 @@ export default {
 			},
 			rules: {
 				login: [{ required: true, trigger: 'blur', validator: validateLogin }],
-				email: [{ required: true, trigger: 'blur', validator: validatePassword }],
-				password: [{ required: true, trigger: 'blur', validator: validateEmail }],
+				email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+				password: [{ required: true, trigger: 'blur', validator: validatePassword }],
 			},
 
 			notify_modal: false,
@@ -360,7 +360,6 @@ export default {
 		},
 		// edit user
 		editUser(data) {
-			console.log('2')
 			this.$store.dispatch('users/updateUser', [data, this.editable_user_id]).then(() => {
 				this.$store.dispatch('users/getUsers', { limit: 10, page: this.pagination_page }).then(() => {
 					this.loading = false

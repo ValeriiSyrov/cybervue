@@ -30,3 +30,11 @@ export function updateUser(data, id) {
         data
     })
 }
+
+export function setAllowedCategories(data) {
+    return request({
+        url: `allowCategory`,
+        method: 'post',
+        data
+    })
+}
