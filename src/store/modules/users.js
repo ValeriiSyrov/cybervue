@@ -54,6 +54,28 @@ const actions = {
                 reject(error)
             })
         })
+    },
+
+    sendUserNotifiction({}, data) {
+        return new Promise((resolve, reject) => {
+            console.log(data)
+            /* sendUserNotifiction().then(response => {
+
+            }).catch(error => {
+
+            }) */
+        })
+    },
+
+    sendNotifiction({}, data) {
+        return new Promise((resolve, reject) => {
+            console.log(data)
+            /* sendNotifiction().then(response => {
+
+            }).catch(error => {
+
+            }) */
+        })
     }
 }
 

@@ -1,10 +1,21 @@
-import {  } from '@/api/notifications'
+import { sendNotification } from '@/api/notifications'
 
 const state = {}
 
 const mutations = {}
 
-const actions = {}
+const actions = {
+    sendNotification({}, data) {
+        return new Promise((resolve, reject) => {
+            sendNotification(data).then(response => {
+
+                resolve(response)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+}
 
 export default {
     namespaced: true,

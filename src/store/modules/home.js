@@ -7,6 +7,7 @@ const state = {
     pending_articles: {},
     categories: {},
     users: null,
+    events: [],
 
     editable_article: {}
 }
@@ -27,6 +28,9 @@ const mutations = {
     SET_USERS_COUNT: (state, users) => {
         state.users = users
     },
+    SET_EVENTS: (state, events) => {
+        state.events = events
+    },
     SET_EDITABLE_ARTICLE: (state, editable_article) => {
         state.editable_article = editable_article
     }
@@ -40,6 +44,7 @@ const actions = {
                 commit('SET_PENDING_ARTICLES', response.data.pendingArticleList)
                 commit('SET_CATEGORIES', response.data.categoryList)
                 commit('SET_USERS_COUNT', response.data.countUsers)
+                commit('SET_EVENTS', response.data.events)
 
                 commit('user/SET_USER_INFO', response.data.user, {root: true})
 

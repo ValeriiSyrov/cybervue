@@ -139,8 +139,6 @@ export default {
 				if (valid) {
                     var form_data = new FormData();
 
-                    console.log(this.editableData)
-
                     for ( var key in this.editableData ) {
                         if (this.editableData[key]) {
                             form_data.append(key, this.editableData[key]);
