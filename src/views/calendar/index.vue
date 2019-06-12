@@ -262,7 +262,7 @@ export default {
 					if (this.editable_event) this.editEvent(form_data)
 					else this.addEvent(form_data)
 				} else {
-					console.log('error submit!!')
+					console.error('error submit!!')
 					return false
 				}
 			})

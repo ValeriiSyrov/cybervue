@@ -66,12 +66,8 @@ const actions = {
   },
 
   signup({  }, signupData) {
-    console.log('w')
-    console.log(signupData)
     return new Promise((resolve, reject) => {
       signup(signupData).then(() => {
-
-
         resolve()
       }).catch(error => {
         reject(error)

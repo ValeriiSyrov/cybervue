@@ -83,7 +83,6 @@ export default {
             })
         },
         toItemClick(item) {
-            console.log(item)
             if (this.block.name == 'categories') {
                 let data = {
                     limit: 10,

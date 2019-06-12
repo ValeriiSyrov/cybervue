@@ -151,7 +151,7 @@ export default {
 
                     this.$store.dispatch('home/updateArticle', [form_data, this.$route.params.id])
 				} else {
-					console.log('error submit!!')
+					console.error('error submit!!')
 					return false
 				}
 			})
@@ -170,7 +170,6 @@ export default {
 
 
             this.article_type = response.data.status
-            console.log(this.article_type)
             this.editableData = data
         })
     }

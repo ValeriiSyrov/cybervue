@@ -340,7 +340,6 @@ export default {
 				if (valid) {
 					let form_data = {} // new FormData();
 					for ( var key in this.editableUser ) {
-						console.log(this.editableUser[key])
                         if (this.editableUser[key]) {
 							if (key == 'subscribe') {
 								form_data[key] = this.editableUser[key].split(', ')
@@ -353,7 +352,7 @@ export default {
 					if (this.editable_user) this.editUser(form_data)
 					else this.createUser(form_data)
 				} else {
-					console.log('error submit!!')
+					console.error('error submit!!')
 					return false
 				}
 			})

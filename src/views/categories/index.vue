@@ -147,7 +147,7 @@ export default {
 					if (this.editable_category) this.editCategory(form_data)
 					else this.addCategory(form_data)
 				} else {
-					console.log('error submit!!')
+					console.error('error submit!!')
 					return false
 				}
 			})

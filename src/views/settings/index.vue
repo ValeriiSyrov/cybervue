@@ -270,7 +270,6 @@ export default {
 					})
 				}
 			})
-			console.log(this.passwordData)
 		},
 
 		// delete user
