@@ -5,7 +5,9 @@ import { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   name: '',
-  avatar: ''
+  avatar: '',
+  roles: [],
+  user: {}
 }
 
 const mutations = {
@@ -17,6 +19,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   },
   SET_USER_INFO: (state, user) => {
     state.user = user
@@ -80,6 +85,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
         removeToken()
         resetRouter()
         resolve()
@@ -93,6 +99,8 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      location.reload()
       removeToken()
       resolve()
     })

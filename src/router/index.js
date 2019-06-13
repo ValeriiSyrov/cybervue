@@ -62,17 +62,22 @@ export const constantRoutes = [
 	},
 
 	{
-		path: '/categories',
+		path: '/edit',
 		component: Layout,
-		redirect: '/categories',
+		redirect: '/edit/edit',
+		hidden: true,
 		children: [{
-			path: 'categories',
-			name: 'Categories',
-			component: () => import('@/views/categories/index'),
-			meta: { title: 'Categories', icon: 'categories' }
+			path: 'edit/:id',
+			name: 'Edit',
+			component: () => import('@/views/edit_article/index'),
 		}]
 	},
 
+	// 404 page must be placed at the end !!!
+	{ path: '*', redirect: '/404', hidden: true }
+]
+
+export const asyncRoutes = [
 	{
 		path: '/articles',
 		component: Layout,
@@ -86,14 +91,17 @@ export const constantRoutes = [
 	},
 
 	{
-		path: '/edit',
+		path: '/categories',
 		component: Layout,
-		redirect: '/edit/edit',
-		hidden: true,
+		redirect: '/categories',
+		meta : {
+			roles: ['admin']
+		},
 		children: [{
-			path: 'edit/:id',
-			name: 'Edit',
-			component: () => import('@/views/edit_article/index'),
+			path: 'categories',
+			name: 'Categories',
+			component: () => import('@/views/categories/index'),
+			meta: { title: 'Categories', icon: 'categories' }
 		}]
 	},
 
@@ -137,6 +145,9 @@ export const constantRoutes = [
 		path: '/settings',
 		component: Layout,
 		redirect: '/settings',
+		meta : {
+			roles: ['admin']
+		},
 		children: [{
 			path: 'settings',
 			name: 'Settings',
@@ -144,9 +155,6 @@ export const constantRoutes = [
 			meta: { title: 'Settings', icon: 'setting' }
 		}]
 	},
-
-	// 404 page must be placed at the end !!!
-	{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

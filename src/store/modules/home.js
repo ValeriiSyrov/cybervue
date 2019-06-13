@@ -48,8 +48,9 @@ const actions = {
 
                 commit('user/SET_USER_INFO', response.data.user, {root: true})
 
-                commit('user/SET_NAME', 'Dmytro', {root: true}) // name
+                commit('user/SET_NAME', response.data.user.login, {root: true}) // name
                 commit('user/SET_AVATAR', 'https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png', {root: true}) // avatar
+                commit('user/SET_ROLES', [(response.data.user.superUser) ? 'admin' : 'editor'], {root: true})
                 resolve()
             }).catch(error => {
                 reject(error)

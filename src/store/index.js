@@ -10,6 +10,7 @@ import notifications from './modules/notifications'
 import settings from './modules/settings'
 import user from './modules/user'
 import users from './modules/users'
+import permission from './modules/permission'
 
 Vue.use(Vuex)
 
@@ -23,7 +24,8 @@ const store = new Vuex.Store({
 		notifications,
 		settings,
 		user,
-		users
+		users,
+		permission
 	},
 	getters
 })
