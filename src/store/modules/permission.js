@@ -61,6 +61,7 @@ const actions = {
         commit('SET_ROUTES', el)
       })
       // commit('SET_ROUTES', accessedRoutes)
+      console.log(accessedRoutes)
       resolve(accessedRoutes)
     })
   }

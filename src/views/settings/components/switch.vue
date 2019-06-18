@@ -13,7 +13,7 @@ export default {
             get() {
                 let switched = false
                 this.allowed.forEach(element => {
-                    if (element == this.category._id) switched = true
+                    if (element._id == this.category._id) switched = true
                 });
                 return switched
             },

@@ -14,6 +14,8 @@ router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
 
+  console.log(to)
+
   // set page title
   document.title = getPageTitle(to.meta.title)
 
@@ -33,6 +35,7 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
+
           // get user info
           await store.dispatch('home/getHomeInfo', {page: 1, limit: 10})
 
@@ -43,10 +46,11 @@ router.beforeEach(async(to, from, next) => {
 
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
+          console.log(router)
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
+          next({ ...to, replace: false })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')

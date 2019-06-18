@@ -61,6 +61,30 @@ export const constantRoutes = [
 		}]
 	},
 
+	// {
+	// 	path: '/articles',
+	// 	component: Layout,
+	// 	children: [
+	// 	  {
+	// 		path: 'index',
+	// 		component: () => import('@/views/documentation/index'),
+	// 		name: 'Documentation',
+	// 		meta: { title: 'Documentation', icon: 'documentation', affix: true }
+	// 	  }
+	// 	]
+	//   },
+
+	{
+		path: '/articles',
+		component: Layout,
+		children: [{
+			path: 'articles',
+			component: () => import('@/views/articles/index'),
+			name: 'Articles',
+			meta: { title: 'Articles', icon: 'articles' }
+		}]
+	},
+
 	{
 		path: '/edit',
 		component: Layout,
@@ -73,29 +97,16 @@ export const constantRoutes = [
 		}]
 	},
 
-	// 404 page must be placed at the end !!!
-	{ path: '*', redirect: '/404', hidden: true }
+
 ]
 
 export const asyncRoutes = [
 	{
-		path: '/articles',
-		component: Layout,
-		redirect: '/articles',
-		children: [{
-			path: 'articles',
-			name: 'Articles',
-			component: () => import('@/views/articles/index'),
-			meta: { title: 'Articles', icon: 'articles' }
-		}]
-	},
-
-	{
 		path: '/categories',
 		component: Layout,
-		redirect: '/categories',
 		meta : {
-			roles: ['admin']
+			roles: ['admin'],
+			name: 'blyat`'
 		},
 		children: [{
 			path: 'categories',
@@ -108,7 +119,6 @@ export const asyncRoutes = [
 	{
 		path: '/calendar',
 		component: Layout,
-		redirect: '/calendar',
 		children: [{
 			path: 'calendar',
 			name: 'Calendar',
@@ -120,7 +130,6 @@ export const asyncRoutes = [
 	{
 		path: '/users',
 		component: Layout,
-		redirect: '/users',
 		children: [{
 			path: 'users',
 			name: 'Users',
@@ -132,7 +141,6 @@ export const asyncRoutes = [
 	{
 		path: '/notifications',
 		component: Layout,
-		redirect: '/notifiations',
 		children: [{
 			path: 'notifiations',
 			name: 'Notifiations',
@@ -155,6 +163,9 @@ export const asyncRoutes = [
 			meta: { title: 'Settings', icon: 'setting' }
 		}]
 	},
+
+	// 404 page must be placed at the end !!!
+	{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

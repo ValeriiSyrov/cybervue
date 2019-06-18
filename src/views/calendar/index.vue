@@ -240,6 +240,7 @@ export default {
 		},
 
 		handleCurrentChange(val) {
+			this.loading = true;
 			this.$store.dispatch('calendar/getEvents', {limit: 10, page: val}).then(() => {
 				this.loading = false;
 			})

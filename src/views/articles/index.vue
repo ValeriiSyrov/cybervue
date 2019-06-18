@@ -128,7 +128,7 @@
 					</template>
 				</el-table-column>
 
-				<el-table-column label="status" width="200">
+				<el-table-column label="SETTING" width="200">
 					<template slot-scope="scope">
 						<div class="table-btns-wrapper">
 							<el-button @click="handlerAnalytics(scope.row._id)" circle><svg-icon icon-class="analytics" /></el-button>

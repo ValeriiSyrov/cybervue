@@ -11,7 +11,8 @@
 		</el-header>
 
 		<el-main>
-			<el-table :data="moderators.docs"
+			<el-table v-loading="loading"
+					  :data="moderators.docs"
 					  border
 					  fit
 					  highlight-current-row
@@ -31,7 +32,7 @@
 
 				<el-table-column label="CATEGORY" width="300">
 					<template slot-scope="scope">
-						<ul><li v-for="(category, index) in scope.row.allowedCategories" :key="index" v-text="category" /></ul>
+						<ul><li v-for="(category, index) in scope.row.allowedCategories" :key="index" v-text="category.title" /></ul>
 					</template>
 				</el-table-column>
 
@@ -52,6 +53,15 @@
 				</el-table-column>
 			</el-table>
 		</el-main>
+
+		<el-footer>
+            <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page.sync="pagination_page"
+                layout="prev, pager, next"
+				:total="moderators.totalDocs">
+            </el-pagination>
+        </el-footer>
 
 		<el-dialog title="Permission"
 				   :visible.sync="modal.permission"
@@ -171,6 +181,7 @@ export default {
 
 		return {
 			pagination_page: 1,
+			loading: true,
 
 			modal: {
 				permission: false,
@@ -227,7 +238,7 @@ export default {
 
 			this.loading = true
 			this.$store.dispatch('users/setAllowedCategories', data).then(() => {
-				this.$store.dispatch('users/getUsers', { limit: 10, page: this.pagination_page, moderator: false }).then(() => {
+				this.$store.dispatch('users/getUsers', { limit: 10, page: this.pagination_page, moderator: true }).then(() => {
 					this.loading = false
 					this.closePermissionModal()
 				})
@@ -235,10 +246,10 @@ export default {
 		},
 		switchHandler(category) {
 			if (category[0]) {
-				this.permissionData.categories.push(category[1]._id)
+				this.permissionData.categories.push(category[1])
 			} else {
 				let categories = this.permissionData.categories.filter(el => {
-					return el != category[1]._id
+					return el._id != category[1]._id
 				})
 				this.permissionData.categories = categories
 			}
@@ -258,7 +269,7 @@ export default {
 					let data = {
 						login: this.editable_moderator.login,
 						email: this.editable_moderator.email,
-						moderator: false,
+						moderator: true,
 						password: this.passwordData.password
 					}
 
@@ -309,7 +320,15 @@ export default {
 					})
 				}
 			})
-		}
+		},
+
+		// pagination
+		handleCurrentChange(val) {
+			this.loading = true
+			this.$store.dispatch('users/getUsers', {limit: 10, page: this.pagination_page}).then(() => {
+				this.loading = false
+			})
+		},
 	},
 	created() {
 		let data = {
